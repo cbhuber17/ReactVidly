@@ -1,8 +1,8 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
-import { getMovie, saveMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import { getMovie, saveMovie } from "../services/movieService";
+import { getGenres } from "../services/genreService";
 
 class MovieForm extends Form {
   state = {
@@ -32,23 +32,33 @@ class MovieForm extends Form {
       .label("Daily Rental Rate"),
   };
 
-  componentDidMount() {
-    const genres = getGenres();
+  async populateGenres() {
+    const { data: genres } = await getGenres();
     this.setState({ genres });
+  }
 
-    const movieId = this.props.match.params.id;
-    if (movieId === "new") return;
+  async populateMovie() {
+    try {
+      const movieId = this.props.match.params.id;
+      if (movieId === "new") return;
 
-    const movie = getMovie(movieId);
+      const { data: movie } = await getMovie(movieId);
 
-    // Redirect the user if movie not found
-    // use .replace (rather than .push) to prevent an infinite loop in the browser
-    // Using .push the user will go to the previous page with an invalid movie id and get redirected again
-    if (!movie) return this.props.history.replace("/not-found");
+      // Don't set to the movie object in the server, reformat using mapToViewModel as the APIs from the back end
+      // are general purpose, not specific.  The data returned can be used in several pages.
+      this.setState({ data: this.mapToViewModel(movie) });
+    } catch (ex) {
+      // Redirect the user if movie not found
+      // use .replace (rather than .push) to prevent an infinite loop in the browser
+      // Using .push the user will go to the previous page with an invalid movie id and get redirected again
+      if (ex.response && ex.response.status === 404)
+        this.props.history.replace("/not-found");
+    }
+  }
 
-    // Don't set to the movie object in the server, reformat using mapToViewModel as the APIs from the back end
-    // are general purpose, not specific.  The data returned can be used in several pages.
-    this.setState({ data: this.mapToViewModel(movie) });
+  async componentDidMount() {
+    await this.populateGenres();
+    await this.populateMovie();
   }
 
   mapToViewModel(movie) {
@@ -61,8 +71,8 @@ class MovieForm extends Form {
     };
   }
 
-  doSubmit = () => {
-    saveMovie(this.state.data);
+  doSubmit = async () => {
+    await saveMovie(this.state.data);
 
     this.props.history.push("/movies");
   };

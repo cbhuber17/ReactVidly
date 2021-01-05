@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import { getMovies, deleteMovie } from "../services/movieService";
+import { getGenres } from "../services/genreService";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import SearchBox from "./searchBox";
@@ -8,6 +8,7 @@ import { paginate } from "../components/utils/paginate";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 class Movies extends Component {
   state = {
@@ -23,16 +24,36 @@ class Movies extends Component {
     selectedGenre: null,
   };
 
-  componentDidMount() {
-    const genres = [{ name: "All Genres", _id: "" }, ...getGenres()];
+  async componentDidMount() {
+    const { data } = await getGenres();
 
-    this.setState({ movies: getMovies(), genres });
+    const genres = [{ name: "All Genres", _id: "" }, ...data];
+
+    const { data: movies } = await getMovies();
+    this.setState({ movies, genres });
   }
 
   // Use arrow to get access to "this" current object
-  handleDelete = (movie) => {
-    const movies = this.state.movies.filter((m) => m._id !== movie._id);
+  handleDelete = async (movie) => {
+    // Just in case need to revert to the original front end UI if a back end
+    // failure occurs.
+    const originalMovies = this.state.movies;
+
+    // Optimistic update - update the UI first, then the backend second
+    // If doing the backend first, it will be slow and as a result
+    // will result in a slow update in the front end, which is not a good
+    // UX for the user.
+    const movies = originalMovies.filter((m) => m._id !== movie._id);
     this.setState({ movies });
+
+    try {
+      await deleteMovie(movie._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        toast.error("This movie has already been deleted.");
+
+      this.setState({ movies: originalMovies });
+    }
   };
 
   handleLike = (movie) => {
