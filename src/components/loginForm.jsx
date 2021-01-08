@@ -1,7 +1,8 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import Joi, { errors } from "joi-browser";
 import Form from "./common/form";
-import auth from "../services/authService";
+import auth, { getCurrentUser } from "../services/authService";
 
 class LoginForm extends Form {
   state = {
@@ -19,8 +20,12 @@ class LoginForm extends Form {
     try {
       const { data } = this.state;
       await auth.login(data.username, data.password);
+
+      // Redirect the user to the page they were previously at after logging in (if location state is defined)
+      const { state } = this.props.location;
+      window.location = state ? state.from.pathname : "/";
       //this.props.history.push("/"); // Redirect the user to the home page, but does not cause a full refresh required after getting a jwt
-      window.location = "/"; // Full reload of app
+      // window.location = "/"; // Full reload of app
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors };
@@ -31,6 +36,8 @@ class LoginForm extends Form {
   };
 
   render() {
+    // If user is already logged in, no need to have them to go the /login page again
+    if (getCurrentUser()) return <Redirect to="/" />;
     return (
       <div>
         <h1>Login</h1>

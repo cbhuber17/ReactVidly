@@ -16,9 +16,15 @@ axios.interceptors.response.use(null, (error) => {
   return Promise.reject(error);
 });
 
+function setJwt(jwt) {
+  // Only allow changes to the database if a user is logged in
+  axios.defaults.headers.common["x-auth-token"] = jwt;
+}
+
 export default {
   get: axios.get,
   post: axios.post,
   put: axios.put,
   delete: axios.delete,
+  setJwt,
 };
