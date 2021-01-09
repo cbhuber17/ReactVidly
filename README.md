@@ -1,70 +1,41 @@
-# Getting Started with Create React App
+# Movies Vildy App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A react project based on Code with Mosh react course: https://codewithmosh.com/p/mastering-react
 
-## Available Scripts
+An application of a fictitious movie rental company that contains a list of movies and metadata. Features for each movie include the ability to see the rental price, how many in stock and genre. The app also supports the ability for users to log in and add movies to the database. Admin permissions are required to delete movies.
 
-In the project directory, you can run:
+## Local development environment setup
 
-### `npm start`
+### Node JS
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The backend is run locally using "vidly-api-node". Open a command window there and run the backend as follows:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+`node index.js`
 
-### `npm test`
+The local backend endpoint is available at `http://localhost:3900/api`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Mongo DB
 
-### `npm run build`
+Mongo server is run locally with the following command:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`mongod`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+(The path should be mapped to the folder containing mongod).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### React app
 
-### `npm run eject`
+The vidly front end is run with the following command (in the vidly project folder)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+`npm start`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The app will open automatically at `http://localhost:5000`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Deployment
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The app front end is located at:
 
-## Learn More
+https://movies-cbhuber.herokuapp.com/movies
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The app back end is located at:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+https://vidly-cbhuber.herokuapp.com/api
